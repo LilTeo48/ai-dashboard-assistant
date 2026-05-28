@@ -106,6 +106,16 @@ else:
 
 st.subheader("Ask AI About Your Filtered Data")
 
+# Chat History
+if "chat_history" not in st.session_state:
+    st.session_state.chat_history = []
+
+st.subheader("AI Chat History")
+
+for chat in reversed(st.session_state.chat_history):
+    st.markdown(f"**Question:** {chat['question']}")
+    st.success(chat["answer"])
+
 user_question = st.text_input(
     "Example: Which product generated the most revenue?"
 )
@@ -118,5 +128,10 @@ if user_question:
 
         with st.spinner("AI is analyzing your filtered data..."):
             answer = ask_ai_about_data(user_question, data_summary)
+
+        st.session_state.chat_history.append({
+            "question": user_question,
+            "answer": answer
+        })
 
         st.success(answer)
