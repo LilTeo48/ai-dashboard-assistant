@@ -6,181 +6,82 @@ AI-powered analytics dashboard built with Python, Streamlit, FastAPI, and OpenAI
 
 ## Features
 
-* AI-generated business insights
-* Interactive analytics dashboard
-* Revenue visualization charts
-* Dynamic KPI metrics
-* Natural language business questions
-* OpenAI API integration
-* CSV upload support
-* Dashboard filtering system
-* AI chat history
-* Streamlit frontend
-* FastAPI backend architecture
-* Secure environment variable handling
+### AI-Powered Data Analysis
 
----
+* Ask natural language questions about sales data using OpenAI.
+* Generate business insights directly from uploaded datasets.
+* Maintain AI chat history throughout the session.
 
-## Tech Stack
+### Interactive Dashboard
 
-### Backend
+* Upload custom CSV files for analysis.
+* Filter data by category, product, and date range.
+* View key business metrics including revenue and quantity sold.
+* Visualize revenue by product and category.
 
-* Python
-* FastAPI
-* OpenAI API
-* SQLAlchemy
+### Database Integration
 
-### Frontend
+* Save sales data to PostgreSQL.
+* Load sales data directly from PostgreSQL.
+* Prevent duplicate records from being inserted.
+* Export filtered datasets as CSV files.
 
-* Streamlit
+### FastAPI Backend
 
-### Data & Analytics
+* REST API built with FastAPI.
+* Interactive Swagger/OpenAPI documentation.
+* Sales analytics endpoints:
 
-* Pandas
-* CSV datasets
-* Data visualization
+  * `/sales`
+  * `/sales/top-products`
+  * `/sales/categories`
+  * `/sales/summary`
 
----
+### Data Processing
 
-## Project Structure
+* SQLAlchemy ORM integration.
+* PostgreSQL relational database storage.
+* CSV ingestion and validation.
+* Data filtering and transformation workflows.
 
-```text
-ai-dashboard-assistant/
-│
-├── backend/
-│   ├── ai_service.py
-│   ├── db.py
-│   └── main.py
-│
-├── dashboard/
-│   └── app.py
-│
-├── data/
-│   └── sample_sales.csv
-│
-├── database/
-│   └── schema.sql
-│
-├── .gitignore
-├── requirements.txt
-└── README.md
-```
 
----
-
-## Features Overview
-
-### AI-Powered Analytics
-
-Ask natural language business questions such as:
-
-* Which product generated the most revenue?
-* What category performs best?
-* Which products should be promoted more?
-* What business insight can you identify?
-
-The OpenAI integration analyzes filtered datasets and generates concise business insights.
-
----
-
-### Dashboard Filters
-
-Users can dynamically filter data by:
-
-* Product category
-* Product name
-* Sale date range
-
-Charts, KPIs, tables, and AI responses update automatically based on selected filters.
-
----
-
-### CSV Upload Support
-
-Users can upload custom CSV datasets directly into the dashboard.
-
-Required columns:
+## Architecture
 
 ```text
-product_name
-category
-quantity_sold
-revenue
-sale_date
+Streamlit Dashboard
+        │
+        ▼
+     FastAPI
+        │
+        ▼
+   SQLAlchemy
+        │
+        ▼
+    PostgreSQL
 ```
 
----
+### Backend Components
 
-### AI Chat History
+* **Streamlit**: User interface, charts, filters, AI interactions.
+* **FastAPI**: REST API layer for sales analytics.
+* **SQLAlchemy**: ORM for database communication.
+* **PostgreSQL**: Persistent data storage.
+* **OpenAI API**: AI-powered business insights.
 
-The dashboard stores previous user prompts and AI-generated insights during the session to create a conversational analytics experience.
-
----
-
-## Installation
-
-Clone the repository:
-
-```bash
-git clone https://github.com/LilTeo48/ai-dashboard-assistant.git
-cd ai-dashboard-assistant
-```
-
-Install dependencies:
-
-```bash
-pip install -r requirements.txt
-```
-
----
-
-## Environment Variables
-
-Create a `.env` file in the root directory:
-
-```env
-OPENAI_API_KEY=your_api_key_here
-```
-
----
-
-## Run the Application
-
-Start Streamlit:
-
-```bash
-streamlit run dashboard/app.py
-```
-
-Start FastAPI backend:
-
-```bash
-uvicorn backend.main:app --reload
-```
-
----
-
-## Example AI Insight
-
-> Electronics is the strongest category, generating the highest total revenue, led by the Monitor product despite lower sales volume.
-
----
 
 ## Future Improvements
 
-* PostgreSQL integration
-* Docker deployment
-* Cloud hosting
-* Authentication system
-* Multi-user support
-* Natural language to SQL conversion
+* Dockerize the application stack.
+* Deploy FastAPI backend to the cloud.
+* Connect Streamlit directly to FastAPI endpoints.
+* Add authentication and user accounts.
+* Implement advanced analytics and forecasting.
+* Add Plotly visualizations and dashboard pages.
+* Create automated ETL workflows.
+* Build a React frontend client.
 
----
 
-## Author
-
+Author
 Tyler Chadwick
 
-GitHub:
-https://github.com/LilTeo48
-
+GitHub: https://github.com/LilTeo48
