@@ -7,7 +7,22 @@ def save_sales_to_db(df):
     db = SessionLocal()
 
     try:
+        saved_count = 0
+        skipped_count = 0
+
         for _, row in df.iterrows():
+            existing_sale = db.query(Sale).filter(
+                Sale.product_name == row["product_name"],
+                Sale.category == row["category"],
+                Sale.quantity_sold == int(row["quantity_sold"]),
+                Sale.revenue == float(row["revenue"]),
+                Sale.sale_date == row["sale_date"].date()
+            ).first()
+
+            if existing_sale:
+                skipped_count += 1
+                continue
+
             sale = Sale(
                 product_name=row["product_name"],
                 category=row["category"],
@@ -17,8 +32,11 @@ def save_sales_to_db(df):
             )
 
             db.add(sale)
+            saved_count += 1
 
         db.commit()
+
+        return saved_count, skipped_count
 
     except Exception as e:
         db.rollback()

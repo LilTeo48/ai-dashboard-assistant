@@ -44,11 +44,15 @@ st.sidebar.header("Database Actions")
 
 if st.sidebar.button("Save Data to PostgreSQL"):
     try:
-        save_sales_to_db(df)
-        st.sidebar.success("Data saved to PostgreSQL successfully.")
-    except Exception as e:
-        st.sidebar.error(f"Database save failed: {e}")  
+        saved_count, skipped_count = save_sales_to_db(df)
 
+        st.sidebar.success(
+            f"Saved {saved_count} new rows. Skipped {skipped_count} duplicates."
+        )
+
+    except Exception as e:
+        st.sidebar.error(f"Database save failed: {e}")
+        
 if st.sidebar.button("Load Data from PostgreSQL"):
     try:
         df = load_sales_from_db()
@@ -115,6 +119,15 @@ col3.metric("Average Revenue", f"${average_revenue:,.2f}")
 
 st.subheader("Filtered Sales Data")
 st.dataframe(filtered_df)
+
+csv = filtered_df.to_csv(index=False).encode("utf-8")
+
+st.download_button(
+    label="Download Filtered Data as CSV",
+    data=csv,
+    file_name="filtered_sales_data.csv",
+    mime="text/csv"
+)
 
 st.subheader("Revenue by Product")
 
