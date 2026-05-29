@@ -6,6 +6,7 @@ import os
 sys.path.append(os.path.abspath("."))
 
 from backend.ai_service import ask_ai_about_data
+from backend.db_utils import save_sales_to_db, load_sales_from_db
 
 st.set_page_config(
     page_title="AI Dashboard Assistant",
@@ -39,7 +40,26 @@ if not required_columns.issubset(df.columns):
 
 df["sale_date"] = pd.to_datetime(df["sale_date"], errors="coerce")
 
+st.sidebar.header("Database Actions")
+
+if st.sidebar.button("Save Data to PostgreSQL"):
+    try:
+        save_sales_to_db(df)
+        st.sidebar.success("Data saved to PostgreSQL successfully.")
+    except Exception as e:
+        st.sidebar.error(f"Database save failed: {e}")  
+
+if st.sidebar.button("Load Data from PostgreSQL"):
+    try:
+        df = load_sales_from_db()
+        df["sale_date"] = pd.to_datetime(df["sale_date"], errors="coerce")
+        st.sidebar.success("Data loaded from PostgreSQL successfully.")
+    except Exception as e:
+        st.sidebar.error(f"Database load failed: {e}")
+
 st.sidebar.header("Filters")
+
+df["sale_date"] = pd.to_datetime(df["sale_date"], errors="coerce")
 
 categories = sorted(df["category"].dropna().unique())
 selected_categories = st.sidebar.multiselect(
@@ -55,8 +75,8 @@ selected_products = st.sidebar.multiselect(
     default=products
 )
 
-min_date = df["sale_date"].min()
-max_date = df["sale_date"].max()
+min_date = df["sale_date"].min().date()
+max_date = df["sale_date"].max().date()
 
 selected_date_range = st.sidebar.date_input(
     "Filter by Sale Date",
@@ -72,9 +92,13 @@ filtered_df = df[
 
 if len(selected_date_range) == 2:
     start_date, end_date = selected_date_range
+
+    start_date = pd.to_datetime(start_date)
+    end_date = pd.to_datetime(end_date)
+
     filtered_df = filtered_df[
-        (filtered_df["sale_date"] >= pd.to_datetime(start_date)) &
-        (filtered_df["sale_date"] <= pd.to_datetime(end_date))
+        (filtered_df["sale_date"] >= start_date) &
+        (filtered_df["sale_date"] <= end_date)
     ]
 
 st.subheader("Key Metrics")
