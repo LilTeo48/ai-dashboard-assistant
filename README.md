@@ -1,84 +1,212 @@
 # AI Dashboard Assistant
 
-AI-powered analytics dashboard built with Python, Streamlit, FastAPI, and OpenAI APIs that generates business insights from sales datasets using natural language prompts.
+An AI-powered business intelligence dashboard built with **Python, Streamlit, FastAPI, PostgreSQL, Docker, Plotly, and OpenAI**.
+
+The application allows users to upload sales data, analyze key business metrics, visualize trends, and generate AI-powered insights through natural language questions.
+
+---
+
+## Live Demo
+
+🔗 Streamlit Deployment: https://ai-dashboard-assistant-kvmbsrfuq29ako3schq24s.streamlit.app/
+
 
 ---
 
 ## Features
 
-### AI-Powered Data Analysis
+### Data Management
 
-* Ask natural language questions about sales data using OpenAI.
-* Generate business insights directly from uploaded datasets.
-* Maintain AI chat history throughout the session.
+* Upload CSV sales datasets
+* Validate uploaded data structure
+* Download filtered datasets as CSV
+* PostgreSQL integration for persistent storage
 
 ### Interactive Dashboard
 
-* Upload custom CSV files for analysis.
-* Filter data by category, product, and date range.
-* View key business metrics including revenue and quantity sold.
-* Visualize revenue by product and category.
+* Revenue KPI metrics
+* Quantity sold tracking
+* Average revenue calculations
+* Product and category filters
+* Date range filtering
 
-### Database Integration
+### Data Visualization
 
-* Save sales data to PostgreSQL.
-* Load sales data directly from PostgreSQL.
-* Prevent duplicate records from being inserted.
-* Export filtered datasets as CSV files.
+* Revenue by Product charts
+* Revenue by Category charts
+* Interactive Plotly visualizations
+* Dark-mode dashboard design
 
-### FastAPI Backend
+### AI-Powered Insights
 
-* REST API built with FastAPI.
-* Interactive Swagger/OpenAPI documentation.
-* Sales analytics endpoints:
+* Ask questions about your sales data
+* OpenAI-powered business analysis
+* Natural language querying
+* Context-aware responses based on filtered datasets
 
-  * `/sales`
-  * `/sales/top-products`
-  * `/sales/categories`
-  * `/sales/summary`
+### Backend Services
 
-### Data Processing
+* FastAPI REST API
+* PostgreSQL database integration
+* SQLAlchemy ORM
+* Dockerized deployment environment
 
-* SQLAlchemy ORM integration.
-* PostgreSQL relational database storage.
-* CSV ingestion and validation.
-* Data filtering and transformation workflows.
+---
 
+## Tech Stack
 
-## Architecture
+### Frontend
+
+* Streamlit
+* Plotly
+
+### Backend
+
+* Python
+* FastAPI
+* SQLAlchemy
+
+### Database
+
+* PostgreSQL
+
+### AI Integration
+
+* OpenAI API
+
+### Deployment & DevOps
+
+* Docker
+* Docker Compose
+* GitHub
+* Streamlit Cloud
+
+---
+
+## Project Architecture
 
 ```text
 Streamlit Dashboard
         │
         ▼
-     FastAPI
+FastAPI Backend
         │
         ▼
-   SQLAlchemy
+PostgreSQL Database
         │
         ▼
-    PostgreSQL
+OpenAI API
 ```
 
-### Backend Components
+---
 
-* **Streamlit**: User interface, charts, filters, AI interactions.
-* **FastAPI**: REST API layer for sales analytics.
-* **SQLAlchemy**: ORM for database communication.
-* **PostgreSQL**: Persistent data storage.
-* **OpenAI API**: AI-powered business insights.
+## Local Installation
 
+### Clone Repository
 
-## Future Improvements
+```bash
+git clone https://github.com/LilTeo48/ai-dashboard-assistant.git
+cd ai-dashboard-assistant
+```
 
-* Dockerize the application stack.
-* Deploy FastAPI backend to the cloud.
-* Connect Streamlit directly to FastAPI endpoints.
-* Add authentication and user accounts.
-* Implement advanced analytics and forecasting.
-* Add Plotly visualizations and dashboard pages.
-* Create automated ETL workflows.
-* Build a React frontend client.
+### Install Dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+### Configure Environment Variables
+
+Create a `.env` file:
+
+```env
+OPENAI_API_KEY=your_api_key
+DATABASE_URL=postgresql://postgres:postgres@localhost:5432/ai_dashboard_db
+```
+
+### Run with Docker
+
+```bash
+docker compose up --build
+```
+
+### Run Streamlit
+
+```bash
+streamlit run dashboard/app.py
+```
+
+---
+
+## API Endpoints
+
+### Sales Data
+
+```http
+GET /sales
+```
+
+Returns all sales records.
+
+### Top Products
+
+```http
+GET /sales/top-products
+```
+
+Returns products ranked by revenue.
+
+### Sales Summary
+
+```http
+GET /sales/summary
+```
+
+Returns dashboard KPI metrics.
+
+---
+
+## Screenshots
+
+### Dashboard Overview
+
+Add dashboard screenshot here.
+
+### Revenue Analytics
+
+Add chart screenshot here.
+
+### AI Insights
+
+Add AI assistant screenshot here.
+
+---
+
+## Future Enhancements
+
+* User authentication
+* Hosted PostgreSQL database
+* Production FastAPI deployment
+* Advanced analytics
+* Forecasting and trend analysis
+* Export to PDF reports
+* Role-based access control
+
+---
+
+## Author
+
+**Tyler Chadwick**
+
+* GitHub: https://github.com/LilTeo48
+* LinkedIn: Add LinkedIn URL
+
+---
+
+## License
+
+MIT License
+
 
 
 Author
