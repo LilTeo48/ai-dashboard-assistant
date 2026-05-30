@@ -30,6 +30,11 @@ def load_top_products_from_api():
     response.raise_for_status()
     return pd.DataFrame(response.json()) 
 
+def load_sales_summary_from_api():
+    response = requests.get(f"{API_BASE_URL}/sales/summary")
+    response.raise_for_status()
+    return response.json()    
+
 st.sidebar.header("Data Source")
 
 uploaded_file = st.sidebar.file_uploader(
@@ -129,15 +134,38 @@ if len(selected_date_range) == 2:
 
 st.subheader("Key Metrics")
 
-total_revenue = filtered_df["revenue"].sum()
-total_quantity = filtered_df["quantity_sold"].sum()
-average_revenue = filtered_df["revenue"].mean()
+try:
+    summary = load_sales_summary_from_api()
 
-col1, col2, col3 = st.columns(3)
+    total_revenue = summary["total_revenue"]
+    total_quantity = summary["total_quantity_sold"]
+    total_records = summary["total_records"]
+    unique_products = summary["unique_products"]
+    unique_categories = summary["unique_categories"]
 
-col1.metric("Total Revenue", f"${total_revenue:,.2f}")
-col2.metric("Quantity Sold", f"{total_quantity:,}")
-col3.metric("Average Revenue", f"${average_revenue:,.2f}")
+    average_revenue = total_revenue / total_records if total_records else 0
+
+    col1, col2, col3, col4, col5 = st.columns(5)
+
+    col1.metric("Total Revenue", f"${total_revenue:,.2f}")
+    col2.metric("Quantity Sold", f"{total_quantity:,}")
+    col3.metric("Average Revenue", f"${average_revenue:,.2f}")
+    col4.metric("Products", f"{unique_products}")
+    col5.metric("Categories", f"{unique_categories}")
+
+except Exception as e:
+    st.warning(f"Could not load KPI metrics from FastAPI: {e}")
+
+    total_revenue = filtered_df["revenue"].sum()
+    total_quantity = filtered_df["quantity_sold"].sum()
+    average_revenue = filtered_df["revenue"].mean()
+
+    col1, col2, col3 = st.columns(3)
+
+    col1.metric("Total Revenue", f"${total_revenue:,.2f}")
+    col2.metric("Quantity Sold", f"{total_quantity:,}")
+    col3.metric("Average Revenue", f"${average_revenue:,.2f}")
+
 
 st.subheader("Filtered Sales Data")
 st.dataframe(filtered_df)
