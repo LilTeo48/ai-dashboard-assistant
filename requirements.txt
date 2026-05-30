@@ -1,3 +1,10 @@
-narwhals==2.21.2
-packaging==26.2
-plotly==6.7.0
+streamlit
+pandas
+plotly
+requests
+openai
+python-dotenv
+sqlalchemy
+psycopg2-binary
+fastapi
+uvicorn
