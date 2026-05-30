@@ -1,0 +1,29 @@
+services:
+  db:
+    image: postgres:16
+    container_name: ai_dashboard_postgres
+    environment:
+      POSTGRES_DB: ai_dashboard_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  app:
+    build: .
+    container_name: ai_dashboard_app
+    depends_on:
+      - db
+    ports:
+      - "8501:8501"
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@db:5432/ai_dashboard_db
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+    volumes:
+      - .:/app
+
+volumes:
+  postgres_data:
