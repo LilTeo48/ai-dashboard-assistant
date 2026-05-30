@@ -2,6 +2,8 @@ import streamlit as st
 import pandas as pd
 import sys
 import os
+import requests
+import plotly.express as px 
 
 sys.path.append(os.path.abspath("."))
 
@@ -15,6 +17,14 @@ st.set_page_config(
 )
 
 st.title("AI Dashboard Assistant")
+
+
+API_BASE_URL = "http://localhost:8000"
+
+def load_sales_from_api():
+    response = requests.get(f"{API_BASE_URL}/sales")
+    response.raise_for_status()
+    return pd.DataFrame(response.json())
 
 st.sidebar.header("Data Source")
 
@@ -60,6 +70,14 @@ if st.sidebar.button("Load Data from PostgreSQL"):
         st.sidebar.success("Data loaded from PostgreSQL successfully.")
     except Exception as e:
         st.sidebar.error(f"Database load failed: {e}")
+
+if st.sidebar.button("Load Data from FastAPI"):
+    try:
+        df = load_sales_from_api()
+        df["sale_date"] = pd.to_datetime(df["sale_date"], errors="coerce")
+        st.sidebar.success("Data loaded from FastAPI successfully.")
+    except Exception as e:
+        st.sidebar.error(f"API load failed: {e}")        
 
 st.sidebar.header("Filters")
 
@@ -132,17 +150,46 @@ st.download_button(
 st.subheader("Revenue by Product")
 
 if not filtered_df.empty:
-    revenue_by_product = filtered_df.groupby("product_name")["revenue"].sum()
-    st.bar_chart(revenue_by_product)
+    revenue_by_product = (
+        filtered_df.groupby("product_name", as_index=False)["revenue"].sum()
+    )
+
+    product_chart = px.bar(
+        revenue_by_product,
+        x="product_name",
+        y="revenue",
+        title="Revenue by Product",
+        labels={
+            "product_name": "Product",
+            "revenue": "Revenue"
+        }
+    )
+
+    st.plotly_chart(product_chart, use_container_width=True)
 
     st.subheader("Revenue by Category")
-    revenue_by_category = filtered_df.groupby("category")["revenue"].sum()
-    st.bar_chart(revenue_by_category)
+
+    revenue_by_category = (
+        filtered_df.groupby("category", as_index=False)["revenue"].sum()
+    )
+
+    category_chart = px.bar(
+        revenue_by_category,
+        x="category",
+        y="revenue",
+        title="Revenue by Category",
+        labels={
+            "category": "Category",
+            "revenue": "Revenue"
+        }
+    )
+
+    st.plotly_chart(category_chart, use_container_width=True)
+
 else:
     st.warning("No data matches your selected filters.")
 
 st.subheader("Ask AI About Your Filtered Data")
-
 # Chat History
 if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
