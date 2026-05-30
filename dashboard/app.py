@@ -18,7 +18,7 @@ st.set_page_config(
 
 st.title("AI Dashboard Assistant")
 
-API_BASE_URL = "http://localhost:8000"
+API_BASE_URL = os.getenv("API_BASE_URL", "http://localhost:8000")
 
 def load_sales_from_api():
     response = requests.get(f"{API_BASE_URL}/sales")
@@ -153,8 +153,7 @@ try:
     col4.metric("Products", f"{unique_products}")
     col5.metric("Categories", f"{unique_categories}")
 
-except Exception as e:
-    st.warning(f"Could not load KPI metrics from FastAPI: {e}")
+except Exception:
 
     total_revenue = filtered_df["revenue"].sum()
     total_quantity = filtered_df["quantity_sold"].sum()
@@ -266,8 +265,22 @@ try:
     else:
         st.info("No top product data available.")
 
-except Exception as e:
-    st.warning(f"Could not load top products from FastAPI: {e}")
+except Exception:
+    top_products_df = (
+        filtered_df.groupby(["product_name", "category"], as_index=False)
+        .agg({
+            "revenue": "sum",
+            "quantity_sold": "sum"
+        })
+        .sort_values(by="revenue", ascending=False)
+        .reset_index(drop=True)
+    )
+
+    top_products_df["rank"] = top_products_df.index + 1
+
+    st.dataframe(
+        top_products_df[["rank", "product_name", "category", "revenue", "quantity_sold"]]
+    )
 
 st.subheader("Ask AI About Your Filtered Data")
 # Chat History
