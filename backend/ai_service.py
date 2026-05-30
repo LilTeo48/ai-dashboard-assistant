@@ -4,10 +4,14 @@ from openai import OpenAI
 
 load_dotenv()
 
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+api_key = os.getenv("OPENAI_API_KEY")
+
+client = OpenAI(api_key=api_key) if api_key else None
 
 
 def ask_ai_about_data(question: str, data_summary: str) -> str:
+    if client is None:
+        return "OpenAI API key not configured."
 
     prompt = f"""
     You are an AI data analyst assistant.
@@ -24,7 +28,7 @@ def ask_ai_about_data(question: str, data_summary: str) -> str:
     """
 
     response = client.chat.completions.create(
-        model="gpt-5.4",
+        model="gpt-4o-mini",
         messages=[
             {
                 "role": "system",
@@ -39,4 +43,3 @@ def ask_ai_about_data(question: str, data_summary: str) -> str:
     )
 
     return response.choices[0].message.content
-    

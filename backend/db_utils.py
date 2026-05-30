@@ -4,6 +4,9 @@ import pandas as pd
 
 
 def save_sales_to_db(df):
+    if SessionLocal is None:
+        raise Exception("DATABASE_URL is not configured.")
+
     db = SessionLocal()
 
     try:
@@ -47,6 +50,9 @@ def save_sales_to_db(df):
 
 
 def load_sales_from_db():
+    if SessionLocal is None:
+        raise Exception("DATABASE_URL is not configured.")
+
     db = SessionLocal()
 
     try:
