@@ -18,13 +18,17 @@ st.set_page_config(
 
 st.title("AI Dashboard Assistant")
 
-
 API_BASE_URL = "http://localhost:8000"
 
 def load_sales_from_api():
     response = requests.get(f"{API_BASE_URL}/sales")
     response.raise_for_status()
     return pd.DataFrame(response.json())
+
+def load_top_products_from_api():
+    response = requests.get(f"{API_BASE_URL}/sales/top-products")
+    response.raise_for_status()
+    return pd.DataFrame(response.json()) 
 
 st.sidebar.header("Data Source")
 
@@ -188,6 +192,54 @@ if not filtered_df.empty:
 
 else:
     st.warning("No data matches your selected filters.")
+
+st.subheader("Top Products Leaderboard")
+
+try:
+    top_products_df = load_top_products_from_api()
+
+    if not top_products_df.empty:
+        top_products_df = top_products_df.sort_values(
+            by="revenue",
+            ascending=False
+        ).reset_index(drop=True)
+
+        top_products_df["rank"] = top_products_df.index + 1
+
+        top_3 = top_products_df.head(3)
+
+        if len(top_3) >= 3:
+            col1, col2, col3 = st.columns(3)
+
+            with col1:
+                st.metric(
+                    f"🥇 {top_3.iloc[0]['product_name']}",
+                    f"${top_3.iloc[0]['revenue']:,.0f}"
+                )
+
+            with col2:
+                st.metric(
+                    f"🥈 {top_3.iloc[1]['product_name']}",
+                    f"${top_3.iloc[1]['revenue']:,.0f}"
+                )
+
+            with col3:
+                st.metric(
+                    f"🥉 {top_3.iloc[2]['product_name']}",
+                    f"${top_3.iloc[2]['revenue']:,.0f}"
+                )
+
+        top_products_df = top_products_df[
+            ["rank", "product_name", "category", "revenue", "quantity_sold"]
+        ]
+
+        st.dataframe(top_products_df)
+
+    else:
+        st.info("No top product data available.")
+
+except Exception as e:
+    st.warning(f"Could not load top products from FastAPI: {e}")
 
 st.subheader("Ask AI About Your Filtered Data")
 # Chat History
